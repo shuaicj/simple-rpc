@@ -1,5 +1,7 @@
 package shuaicj.example.simplerpc.server;
 
+import java.io.IOException;
+
 /**
  * The interface for rpc server.
  *
@@ -7,7 +9,7 @@ package shuaicj.example.simplerpc.server;
  */
 public interface RpcServer {
 
-    void start() throws RpcException;
+    void start() throws IOException;
 
     <T> void export(Class<T> serviceInterface, Class<? extends T> serviceImpl);
 }

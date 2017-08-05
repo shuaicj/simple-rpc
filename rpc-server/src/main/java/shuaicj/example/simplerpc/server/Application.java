@@ -1,5 +1,7 @@
 package shuaicj.example.simplerpc.server;
 
+import java.io.IOException;
+
 import shuaicj.example.simplerpc.common.HelloService;
 
 /**
@@ -9,8 +11,8 @@ import shuaicj.example.simplerpc.common.HelloService;
  */
 public class Application {
 
-    public static void main(String[] args) throws RpcException {
-        RpcServer server = new RpcServerImpl(8080, 10);
+    public static void main(String[] args) throws IOException {
+        RpcServer server = new RpcServerImpl(8080, 3);
         server.export(HelloService.class, HelloServiceImpl.class);
         server.start();
     }
