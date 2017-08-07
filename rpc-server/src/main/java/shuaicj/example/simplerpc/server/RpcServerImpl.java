@@ -36,10 +36,9 @@ public class RpcServerImpl implements RpcServer {
             while (true) {
                 Socket socket = server.accept();
                 pool.submit(() -> {
-                    ObjectInputStream in = null;
-                    ObjectOutputStream out = null;
-                    try {
-                        in = new ObjectInputStream(socket.getInputStream());
+                    try (ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
+                         ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream())) {
+
                         String serviceName = in.readUTF();
                         String methodName = in.readUTF();
                         Class[] paramTypes = (Class[]) in.readObject();
@@ -49,26 +48,9 @@ public class RpcServerImpl implements RpcServer {
                         Method method = serviceClass.getMethod(methodName, paramTypes);
                         Object result = method.invoke(serviceClass.newInstance(), params);
 
-                        out = new ObjectOutputStream(socket.getOutputStream());
                         out.writeObject(result);
                     } catch (Exception e) {
                         e.printStackTrace();
-                    } finally {
-                        try {
-                            in.close();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        try {
-                            out.close();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        try {
-                            socket.close();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
                     }
                 });
             }
